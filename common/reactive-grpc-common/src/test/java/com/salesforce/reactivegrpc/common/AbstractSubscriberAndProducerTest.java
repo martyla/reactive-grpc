@@ -58,6 +58,12 @@ public class AbstractSubscriberAndProducerTest {
     }
 
     @RepeatedTest(2)
+    public void shouldNotCancelAfterDoneTest() throws InterruptedException {
+        final TestCallStreamObserver<Integer> downstream = new TestCallStreamObserver<Integer>(executorService);
+        
+    }
+
+    @RepeatedTest(2)
     public void shouldSupportOnlySingleSubscribersTest() throws InterruptedException {
         final TestCallStreamObserver<Integer> downstream = new TestCallStreamObserver<Integer>(executorService);
         for (int i = 0; i < 1000; i++) {

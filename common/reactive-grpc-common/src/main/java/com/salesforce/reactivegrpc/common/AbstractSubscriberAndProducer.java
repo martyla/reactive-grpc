@@ -70,7 +70,7 @@ public abstract class AbstractSubscriberAndProducer<T> implements Subscriber<T>,
     private static final Subscription CANCELLED_SUBSCRIPTION = new CancelledQueueSubscription();
 
     private Throwable throwable;
-    private boolean   done;
+    private volatile boolean done;
 
     private boolean isRequested;
 
@@ -110,7 +110,9 @@ public abstract class AbstractSubscriberAndProducer<T> implements Subscriber<T>,
     public void cancel() {
         Subscription s = SUBSCRIPTION.getAndSet(this, CANCELLED_SUBSCRIPTION);
         if (s != null && s != CANCELLED_SUBSCRIPTION) {
-            s.cancel();
+            if (!done) {
+                s.cancel();
+            }
 
             if (WIP.getAndIncrement(this) == 0) {
                 if (sourceMode != NONE) {
